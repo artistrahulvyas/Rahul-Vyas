@@ -1,0 +1,60 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
+import seaborn as sns
+import numpy as np
+data = pd.read_csv('e_commerce.csv')
+data.info()
+data.isnull().sum()
+data.fillna(0, inplace=True)
+purchases = data.groupby(['User_ID']).sum().reset_index()
+data[data['User_ID'] == 1000001]
+purchase_by_age = data.groupby('Age')
+['Purchase'].mean().reset_index()
+plt.figure(figsize=(16,4))
+plt.plot(purchase_by_age.index, purchase_by_age.values, color='purple', marker='*')
+plt.grid()
+plt.xlabel('Age Group', fontsize=10)
+plt.ylabel('Total Purchases in $', fontsize=10)
+plt.title('Average Sales distributed by age group', fontsize=15)
+plt.show()
+
+#Grouping by age and gender
+age_and_gender = data.groupby('Age')['Gender'].count().reset_index()
+gender = data.groupby('Gender')['Age'].count().reset_index()
+
+#plot
+plt.figure(figsize=(12,9))
+plt.pie(age_and_gender['Gender'], labels=age_and_gender['Age'],autopct='%d%%', colors=['cyan', 'steelblue','peru','blue','yellowgreen','salmon','#0040FF'])
+plt.axis('equal')
+plt.title("Age Distribution", fontsize='20')
+plt.show()
+
+#plot according to gender distribution 
+plt.figure(figsize=(12,9))
+plt.pie(gender['Age'], labels=gender['Gender'],autopct='%d%%', colors=['salmon','steelblue'])
+plt.axis('equal')
+plt.title("Gender Distribution", fontsize='20')
+plt.show()
+
+occupation = data.groupby('Occupation')
+['Purchase'].mean().reset_index()
+sns.set(style="white", rc={"lines.linewidth": 3})
+fig, ax1 = plt.subplots(figsize=(12,9))
+sns.barplot(x=occupation['Occupation'],y=occupation['Purchase'],color='#004488',ax=ax1)
+sns.lineplot(x=occupation['Occupation'],y=occupation['Purchase'],color='salmon',marker="o",ax=ax1)
+plt.axis([-1,21,8000,10000])
+plt.title('Occupation Bar Chart', fontsize='15')
+plt.show()
+sns.set()
+product = data.groupby('Product_ID')['Purchase'].count().reset_index()
+product.rename(columns={'Purchase':'Count'},inplace=True)
+product_sorted = product.sort_values('Count',ascending=False)
+
+plt.figure(figsize=(14,8))
+plt.plot(product_sorted['Product_ID'][:10], product_sorted['Count'][:10], linestyle='-', color='purple', marker='o')
+plt.title("Best-selling Products", fontsize='15')
+plt.xlabel('Product ID', fontsize='15')
+plt.ylabel('Products Sold', fontsize='15')
+plt.show()
+
